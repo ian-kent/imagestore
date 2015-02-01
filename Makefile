@@ -5,6 +5,7 @@ all: deps
 
 deps:
 	go get -u github.com/gorilla/pat
+	go get -u github.com/crowdmob/goamz/aws
 
 dist: deps
 	-rm -rf ./.dist-build
