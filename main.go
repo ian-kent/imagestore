@@ -147,6 +147,11 @@ func head(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(404)
 		return
 	}
+	for k, v := range res.Header {
+		for _, v1 := range v {
+			w.Header().Add(k, v1)
+		}
+	}
 	w.WriteHeader(res.StatusCode)
 }
 
