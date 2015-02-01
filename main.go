@@ -45,6 +45,7 @@ func main() {
 	p := pat.New()
 	p.Path("/healthcheck").Methods("GET").HandlerFunc(healthcheck)
 	p.Path("/images/{url:.+}").Methods("POST").HandlerFunc(upload)
+	p.Path("/images/{url:.+}").Methods("head").HandlerFunc(head)
 	p.Path("/images/{url:.+}").Methods("GET").HandlerFunc(download)
 	p.Path("/images/{url:.+}").Methods("DELETE").HandlerFunc(remove)
 
@@ -127,6 +128,26 @@ func download(w http.ResponseWriter, req *http.Request) {
 
 	w.WriteHeader(200)
 	w.Write(b)
+}
+
+func head(w http.ResponseWriter, req *http.Request) {
+	path := req.URL.Query().Get(":url")
+
+	if len(s3prefix) > 0 {
+		path = s3prefix + "/" + path
+	}
+
+	res, err := s3bucket.Head(path, nil)
+	if err != nil && err.Error() != "404 Not Found" {
+		w.WriteHeader(500)
+		w.Write([]byte("Error: calling Head: " + err.Error()))
+		return
+	}
+	if err != nil {
+		w.WriteHeader(404)
+		return
+	}
+	w.WriteHeader(res.StatusCode)
 }
 
 func remove(w http.ResponseWriter, req *http.Request) {
