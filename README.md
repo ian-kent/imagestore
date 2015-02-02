@@ -56,7 +56,7 @@ Command:
 
 URI:
 
-`https://github.com/ian-kent/imagestore/releases/download/v1.0.2/imagestore-1.0.2_linux_amd64.zip`
+`https://github.com/ian-kent/imagestore/releases/download/v1.0.3/imagestore-1.0.3_linux_amd64.zip`
 
 ### Licence
 
