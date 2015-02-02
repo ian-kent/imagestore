@@ -44,10 +44,10 @@ func main() {
 
 	p := pat.New()
 	p.Path("/healthcheck").Methods("GET").HandlerFunc(healthcheck)
-	p.Path("/images/{url:.+}").Methods("POST").HandlerFunc(upload)
-	p.Path("/images/{url:.+}").Methods("head").HandlerFunc(head)
-	p.Path("/images/{url:.+}").Methods("GET").HandlerFunc(download)
-	p.Path("/images/{url:.+}").Methods("DELETE").HandlerFunc(remove)
+	p.Path("/{url:.+}").Methods("POST").HandlerFunc(upload)
+	p.Path("/{url:.+}").Methods("head").HandlerFunc(head)
+	p.Path("/{url:.+}").Methods("GET").HandlerFunc(download)
+	p.Path("/{url:.+}").Methods("DELETE").HandlerFunc(remove)
 
 	err = http.ListenAndServe(bindAddr, p)
 	if err != nil {
