@@ -1,11 +1,11 @@
-VERSION=1.0.3
+VERSION=1.0.4
 
 all: deps
 	go build .
 
 deps:
 	go get -u github.com/gorilla/pat
-	go get -u github.com/crowdmob/goamz/aws
+	go get -u github.com/AdRoll/goamz/aws
 
 dist: deps
 	-rm -rf ./.dist-build

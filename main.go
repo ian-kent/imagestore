@@ -1,13 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"io/ioutil"
 	"log"
 	"net/http"
 
-	"github.com/crowdmob/goamz/aws"
-	"github.com/crowdmob/goamz/s3"
+	"github.com/AdRoll/goamz/aws"
+	"github.com/AdRoll/goamz/s3"
 	"github.com/gorilla/pat"
 )
 
@@ -44,8 +45,9 @@ func main() {
 
 	p := pat.New()
 	p.Path("/healthcheck").Methods("GET").HandlerFunc(healthcheck)
+	p.Path("/find").Methods("GET").HandlerFunc(find)
 	p.Path("/{url:.+}").Methods("POST").HandlerFunc(upload)
-	p.Path("/{url:.+}").Methods("head").HandlerFunc(head)
+	p.Path("/{url:.+}").Methods("HEAD").HandlerFunc(head)
 	p.Path("/{url:.+}").Methods("GET").HandlerFunc(download)
 	p.Path("/{url:.+}").Methods("DELETE").HandlerFunc(remove)
 
@@ -123,6 +125,38 @@ func download(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		w.WriteHeader(500)
 		w.Write([]byte("Error: calling Get: " + err.Error()))
+		return
+	}
+
+	w.WriteHeader(200)
+	w.Write(b)
+}
+
+func find(w http.ResponseWriter, req *http.Request) {
+	q := req.URL.Query().Get("q")
+
+	path := ""
+	if len(s3prefix) > 0 {
+		path = s3prefix + "/"
+	}
+	path += q
+
+	res, err := s3bucket.List(path, "/", "", 1000)
+	if err != nil {
+		w.WriteHeader(500)
+		w.Write([]byte("Error: calling List: " + err.Error()))
+		return
+	}
+
+	matches := make([]string, 0)
+	for _, i := range res.Contents {
+		matches = append(matches, i.Key)
+	}
+
+	b, err := json.Marshal(&matches)
+	if err != nil {
+		w.WriteHeader(500)
+		w.Write([]byte("Error: marshalling json: " + err.Error()))
 		return
 	}
 

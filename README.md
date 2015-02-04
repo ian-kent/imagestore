@@ -46,6 +46,11 @@ Delete something:
 curl -v -X DELETE http://localhost:5253/images/Makefile
 ```
 
+Find something:
+```bash
+curl -v http://localhost:5253/find?q=images/app-name
+```
+
 ### Using Marathon
 
 If you're using Mesos and Marathon, you can easily start imagestore:
@@ -56,7 +61,7 @@ Command:
 
 URI:
 
-`https://github.com/ian-kent/imagestore/releases/download/v1.0.3/imagestore-1.0.3_linux_amd64.zip`
+`https://github.com/ian-kent/imagestore/releases/download/v1.0.4/imagestore-1.0.4_linux_amd64.zip`
 
 ### Licence
 
